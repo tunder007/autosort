@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autosort"
+version = "0.1.0"
+description = "Sort files by type — local CLI and pay-as-you-go SaaS API"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "sqlalchemy>=2.0.36",
+    "psycopg2-binary>=2.9.10",
+    "httpx>=0.28.0",
+    "python-multipart>=0.0.18",
+    "stripe>=11.3.0",
+    "itsdangerous>=2.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+]
+
+[project.scripts]
+autosort = "cli.main:main"
+
+[tool.setuptools]
+package-dir = {"core" = "packages/core", "cli" = "packages/cli", "api" = "packages/api"}
+packages = ["core", "cli", "api", "api.models", "api.routers", "api.schemas", "api.services"]
+
+[tool.pytest.ini_options]
+testpaths = ["packages/core/tests"]

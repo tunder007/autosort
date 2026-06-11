@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: autosort
+      POSTGRES_PASSWORD: autosort
+      POSTGRES_DB: autosort
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://autosort:autosort@db:5432/autosort
+      WEB_URL: http://localhost:3000
+      API_URL: http://localhost:8000
+      SESSION_SECRET: dev-secret-change-me
+      STORAGE_PATH: /app/storage
+    volumes:
+      - api_storage:/app/storage
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: packages/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  api_storage:
